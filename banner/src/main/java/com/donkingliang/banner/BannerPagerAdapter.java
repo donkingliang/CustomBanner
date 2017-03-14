@@ -12,21 +12,21 @@ import java.util.List;
 public class BannerPagerAdapter<T> extends PagerAdapter {
 
     private Context mContext;
-    private List<T> mDatas;
+    private List<T> mData;
     private CustomBanner.ViewCreator mCreator;
     private CustomBanner.OnPageClickListener mOnPageClickListener;
 
     private SparseArray<View> views = new SparseArray<>();
 
-    public BannerPagerAdapter(Context context, CustomBanner.ViewCreator<T> creator, List datas) {
+    public BannerPagerAdapter(Context context, CustomBanner.ViewCreator<T> creator, List data) {
         mContext = context;
         mCreator = creator;
-        mDatas = datas;
+        mData = data;
     }
 
     @Override
     public int getCount() {
-        return mDatas == null || mDatas.isEmpty() ? 0 : mDatas.size() + 2;
+        return mData == null || mData.isEmpty() ? 0 : mData.size() + 2;
     }
 
     @Override
@@ -58,9 +58,9 @@ public class BannerPagerAdapter<T> extends PagerAdapter {
         }
 
         final int item = getActualPosition(position);
-        final T t = mDatas.get(item);
+        final T t = mData.get(item);
 
-        mCreator.UpdateUI(mContext, view, item, mDatas.get(item));
+        mCreator.updateUI(mContext, view, item, t);
 
         view.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -77,7 +77,7 @@ public class BannerPagerAdapter<T> extends PagerAdapter {
 
     private int getActualPosition(int position) {
         if (position == 0) {
-            return mDatas.size() - 1;
+            return mData.size() - 1;
         } else if (position == getCount() - 1) {
             return 0;
         } else {

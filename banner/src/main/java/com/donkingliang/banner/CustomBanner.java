@@ -164,19 +164,19 @@ public class CustomBanner<T> extends FrameLayout {
      * 设置轮播图数据
      *
      * @param creator 创建和更新轮播图View的接口
-     * @param datas   轮播图数据
+     * @param data   轮播图数据
      * @return
      */
-    public CustomBanner<T> setPages(ViewCreator<T> creator, List<T> datas) {
-        mAdapter = new BannerPagerAdapter<T>(mContext, creator, datas);
+    public CustomBanner<T> setPages(ViewCreator<T> creator, List<T> data) {
+        mAdapter = new BannerPagerAdapter<T>(mContext, creator, data);
         if (mOnPageClickListener != null) {
             mAdapter.setOnPageClickListener(mOnPageClickListener);
         }
         mBannerViewPager.setAdapter(mAdapter);
-        if (datas == null) {
+        if (data == null) {
             mIndicatorLayout.removeAllViews();
         } else {
-            initIndicator(datas.size());
+            initIndicator(data.size());
         }
         setCurrentItem(0);
         updateIndicator();
@@ -398,6 +398,6 @@ public class CustomBanner<T> extends FrameLayout {
 
         View createView(Context context, int position);
 
-        void UpdateUI(Context context, View view, int position, T data);
+        void updateUI(Context context, View view, int position, T t);
     }
 }
