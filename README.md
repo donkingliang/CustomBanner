@@ -20,7 +20,7 @@ Android轮播图控件，支持任何View的轮播，而不仅仅是图片(Image
 ```
 	<!-- 设置普通指示器 -->
 	<com.donkingliang.banner.CustomBanner 
-		xmlns:app="http://schemas.android.com/apk/res-auto"
+	    xmlns:app="http://schemas.android.com/apk/res-auto"
 	    android:id="@+id/banner"
 	    android:layout_width="match_parent"
 	    android:layout_height="180dp"
