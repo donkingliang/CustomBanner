@@ -2,6 +2,9 @@ package com.donkingliang.banner;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Color;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.ShapeDrawable;
 import android.os.Handler;
 import android.support.v4.view.ViewPager;
 import android.util.AttributeSet;
@@ -21,15 +24,21 @@ public class CustomBanner<T> extends FrameLayout {
     private Context mContext;
 
     private ViewPager mBannerViewPager;
+    //普通指示器的容器
     private LinearLayout mIndicatorLayout;
+    //数字指示器
+    private NumberIndicator mNumberIndicator;
     private BannerPagerAdapter<T> mAdapter;
     private ViewPagerScroller mScroller;
     private long mIntervalTime;
 
     private int mIndicatorSelectRes;
     private int mIndicatorUnSelectRes;
-    private IndicatorGravity mIndicatorGravity = IndicatorGravity.CENTER_HORIZONTAL;
+    private int mIndicatorInterval;
+    private IndicatorGravity mIndicatorGravity = IndicatorGravity.CENTER;
+    private IndicatorStyle mIndicatorStyle = IndicatorStyle.ORDINARY;
 
+    private int mBannerCount;
     private boolean isTurning;
 
     private OnPageClickListener mOnPageClickListener;
@@ -47,8 +56,23 @@ public class CustomBanner<T> extends FrameLayout {
         }
     };
 
+    /**
+     * 指示器方向
+     */
     public enum IndicatorGravity {
-        LEFT, RIGHT, CENTER_HORIZONTAL
+        LEFT, RIGHT, CENTER
+    }
+
+    /**
+     * 指示器类型
+     */
+    public enum IndicatorStyle {
+        //没有指示器
+        NONE,
+        //数字指示器
+        NUMBER,
+        //普通指示器
+        ORDINARY
     }
 
     public CustomBanner(Context context) {
@@ -78,10 +102,25 @@ public class CustomBanner<T> extends FrameLayout {
             } else if (gravity == 2) {
                 mIndicatorGravity = IndicatorGravity.RIGHT;
             } else if (gravity == 3) {
-                mIndicatorGravity = IndicatorGravity.CENTER_HORIZONTAL;
+                mIndicatorGravity = IndicatorGravity.CENTER;
             }
-            mIndicatorSelectRes = mTypedArray.getResourceId(R.styleable.custom_banner_indicatorSelectRes, 0);
-            mIndicatorUnSelectRes = mTypedArray.getResourceId(R.styleable.custom_banner_indicatorUnSelectRes, 0);
+
+            int style = mTypedArray.getInt(R.styleable.custom_banner_indicatorStyle, 3);
+
+            if (style == 1) {
+                mIndicatorStyle = IndicatorStyle.NONE;
+            } else if (style == 2) {
+                mIndicatorStyle = IndicatorStyle.NUMBER;
+            } else if (style == 3) {
+                mIndicatorStyle = IndicatorStyle.ORDINARY;
+            }
+
+            mIndicatorInterval = mTypedArray.getDimensionPixelOffset(
+                    R.styleable.custom_banner_indicatorInterval, DensityUtils.dp2px(context, 5));
+            mIndicatorSelectRes = mTypedArray.getResourceId(
+                    R.styleable.custom_banner_indicatorSelectRes, 0);
+            mIndicatorUnSelectRes = mTypedArray.getResourceId(
+                    R.styleable.custom_banner_indicatorUnSelectRes, 0);
             mTypedArray.recycle();
         }
     }
@@ -90,6 +129,7 @@ public class CustomBanner<T> extends FrameLayout {
         mContext = context;
         addBannerViewPager(context);
         addIndicatorLayout(context);
+        addTextIndicator(context);
     }
 
     private void addBannerViewPager(Context context) {
@@ -98,7 +138,8 @@ public class CustomBanner<T> extends FrameLayout {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetP) {
                 if (!isMarginal(position) && mOnPageChangeListener != null) {
-                    mOnPageChangeListener.onPageScrolled(getActualPosition(position), positionOffset, positionOffsetP);
+                    mOnPageChangeListener.onPageScrolled(getActualPosition(position),
+                            positionOffset, positionOffsetP);
                 }
             }
 
@@ -135,12 +176,38 @@ public class CustomBanner<T> extends FrameLayout {
     }
 
     private void addIndicatorLayout(Context context) {
+        //添加普通指示器容器
         mIndicatorLayout = new LinearLayout(context);
         LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
         lp.gravity = analysisGravity(mIndicatorGravity);
-        lp.setMargins(0, 0, 0, DensityUtils.dp2px(context, 8));
+        int margins = DensityUtils.dp2px(context, 8);
+        lp.setMargins(margins, 0, margins, margins);
         mIndicatorLayout.setGravity(Gravity.CENTER);
+        mIndicatorLayout.setShowDividers(LinearLayout.SHOW_DIVIDER_MIDDLE);
+        mIndicatorLayout.setDividerDrawable(getDividerDrawable(mIndicatorInterval));
         this.addView(mIndicatorLayout, lp);
+        mIndicatorLayout.setVisibility(mIndicatorStyle == IndicatorStyle.ORDINARY ? VISIBLE : GONE);
+    }
+
+    private void addTextIndicator(Context context) {
+        //添加数字指示器
+        mNumberIndicator = new NumberIndicator(context);
+        LayoutParams lp = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        lp.gravity = analysisGravity(mIndicatorGravity);
+        int margins = DensityUtils.dp2px(context, 8);
+        lp.setMargins(margins, 0, margins, margins);
+        this.addView(mNumberIndicator, lp);
+        mNumberIndicator.setVisibility(GONE);
+    }
+
+    private Drawable getDividerDrawable(int interval) {
+//        ShapeDrawable drawable = (ShapeDrawable) mContext.getResources().getDrawable(
+//                R.drawable.indicator_divider);
+//        drawable.setIntrinsicWidth(interval);
+        ShapeDrawable drawable = new ShapeDrawable();
+        drawable.getPaint().setColor(Color.TRANSPARENT);
+        drawable.setIntrinsicWidth(interval);
+        return drawable;
     }
 
     @Override
@@ -164,7 +231,7 @@ public class CustomBanner<T> extends FrameLayout {
      * 设置轮播图数据
      *
      * @param creator 创建和更新轮播图View的接口
-     * @param data   轮播图数据
+     * @param data    轮播图数据
      * @return
      */
     public CustomBanner<T> setPages(ViewCreator<T> creator, List<T> data) {
@@ -175,7 +242,9 @@ public class CustomBanner<T> extends FrameLayout {
         mBannerViewPager.setAdapter(mAdapter);
         if (data == null) {
             mIndicatorLayout.removeAllViews();
+            mBannerCount = 0;
         } else {
+            mBannerCount = data.size();
             initIndicator(data.size());
         }
         setCurrentItem(0);
@@ -206,9 +275,50 @@ public class CustomBanner<T> extends FrameLayout {
     public CustomBanner<T> setIndicatorGravity(IndicatorGravity gravity) {
         if (mIndicatorGravity != gravity) {
             mIndicatorGravity = gravity;
-            LayoutParams lp = (LayoutParams) mIndicatorLayout.getLayoutParams();
-            lp.gravity = analysisGravity(gravity);
-            mIndicatorLayout.setLayoutParams(lp);
+            setOrdinaryIndicatorGravity(gravity);
+            setNumberIndicatorGravity(gravity);
+        }
+        return this;
+    }
+
+    private void setOrdinaryIndicatorGravity(IndicatorGravity gravity) {
+        LayoutParams lp = (LayoutParams) mIndicatorLayout.getLayoutParams();
+        lp.gravity = analysisGravity(gravity);
+        mIndicatorLayout.setLayoutParams(lp);
+    }
+
+    private void setNumberIndicatorGravity(IndicatorGravity gravity) {
+        LayoutParams lp = (LayoutParams) mNumberIndicator.getLayoutParams();
+        lp.gravity = analysisGravity(gravity);
+        mNumberIndicator.setLayoutParams(lp);
+    }
+
+    /**
+     * 设置指示器类型
+     *
+     * @param style 指示器类型 普通指示器 数字指示器 没有指示器 三种
+     * @return
+     */
+    public CustomBanner<T> setIndicatorStyle(IndicatorStyle style) {
+        if (mIndicatorStyle != style) {
+            mIndicatorStyle = style;
+            mIndicatorLayout.setVisibility(mIndicatorStyle == IndicatorStyle.ORDINARY ? VISIBLE : GONE);
+            mNumberIndicator.setVisibility(mIndicatorStyle == IndicatorStyle.NUMBER ? VISIBLE : GONE);
+            updateIndicator();
+        }
+        return this;
+    }
+
+    /**
+     * 设置指示器间隔
+     *
+     * @param interval
+     * @return
+     */
+    public CustomBanner<T> setIndicatorInterval(int interval) {
+        if (mIndicatorInterval != interval) {
+            mIndicatorInterval = interval;
+            mIndicatorLayout.setDividerDrawable(getDividerDrawable(interval));
         }
         return this;
     }
@@ -309,8 +419,8 @@ public class CustomBanner<T> extends FrameLayout {
         if (count > 0) {
             for (int i = 0; i < count; i++) {
                 ImageView imageView = new ImageView(mContext);
-                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-                lp.setMargins(DensityUtils.dp2px(mContext, 2), 0, DensityUtils.dp2px(mContext, 2), 0);
+                LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(
+                        ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
                 mIndicatorLayout.addView(imageView, lp);
             }
         }
@@ -320,24 +430,33 @@ public class CustomBanner<T> extends FrameLayout {
      * 更新指示器
      */
     private void updateIndicator() {
-        int count = mIndicatorLayout.getChildCount();
-        int currentPage = getCurrentItem();
-        if (count > 0) {
-            for (int i = 0; i < count; i++) {
-                ImageView view = (ImageView) mIndicatorLayout.getChildAt(i);
-                if (i == currentPage) {
-                    if (mIndicatorSelectRes != 0) {
-                        view.setImageResource(mIndicatorSelectRes);
+        if (mIndicatorStyle == IndicatorStyle.ORDINARY) {
+            int count = mIndicatorLayout.getChildCount();
+            int currentPage = getCurrentItem();
+            if (count > 0) {
+                for (int i = 0; i < count; i++) {
+                    ImageView view = (ImageView) mIndicatorLayout.getChildAt(i);
+                    if (i == currentPage) {
+                        if (mIndicatorSelectRes != 0) {
+                            view.setImageResource(mIndicatorSelectRes);
+                        } else {
+                            view.setImageBitmap(null);
+                        }
                     } else {
-                        view.setImageBitmap(null);
-                    }
-                } else {
-                    if (mIndicatorUnSelectRes != 0) {
-                        view.setImageResource(mIndicatorUnSelectRes);
-                    } else {
-                        view.setImageBitmap(null);
+                        if (mIndicatorUnSelectRes != 0) {
+                            view.setImageResource(mIndicatorUnSelectRes);
+                        } else {
+                            view.setImageBitmap(null);
+                        }
                     }
                 }
+            }
+        } else if (mIndicatorStyle == IndicatorStyle.NUMBER) {
+            if (mBannerCount > 0) {
+                mNumberIndicator.setVisibility(VISIBLE);
+                mNumberIndicator.setText((getCurrentItem() + 1) + "/" + mBannerCount);
+            } else {
+                mNumberIndicator.setVisibility(GONE);
             }
         }
     }

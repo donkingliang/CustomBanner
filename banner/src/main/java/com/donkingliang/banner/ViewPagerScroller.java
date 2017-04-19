@@ -6,7 +6,7 @@ import android.widget.Scroller;
 
 public class ViewPagerScroller extends Scroller {
 
-    private int mScrollDuration = 550;
+    private int mScrollDuration = 360;
     private boolean sudden;
 
     public ViewPagerScroller(Context context) {

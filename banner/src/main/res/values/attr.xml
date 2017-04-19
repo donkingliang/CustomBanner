@@ -5,10 +5,16 @@
         <attr name="indicatorGravity" format="enum">
             <enum name="LEFT" value="1" />
             <enum name="RIGHT" value="2" />
-            <enum name="CENTER_HORIZONTAL" value="3" />
+            <enum name="CENTER" value="3" />
+        </attr>
+        <attr name="indicatorStyle" format="enum">
+            <enum name="NONE" value="1" />
+            <enum name="NUMBER" value="2" />
+            <enum name="ORDINARY" value="3" />
         </attr>
         <attr name="indicatorSelectRes" format="reference" />
         <attr name="indicatorUnSelectRes" format="reference" />
+        <attr name="indicatorInterval" format="dimension" />
     </declare-styleable>
 
 </resources>
