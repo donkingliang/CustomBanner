@@ -17,7 +17,7 @@ Android轮播图控件，支持任何View的轮播，而不仅仅是图片(Image
     }
 ```
 ### 2、编写布局
-```
+```xml
 	<!-- 设置普通指示器 -->
 	<com.donkingliang.banner.CustomBanner 
 	    xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -51,7 +51,7 @@ Android轮播图控件，支持任何View的轮播，而不仅仅是图片(Image
 ```
 ### 3、CustomBanner的方法使用 
 #### 1）、设置数据
-```
+```java
 mBanner.setPages(new CustomBanner.ViewCreator<String>() {
     @Override
     public View createView(Context context, int position) {
@@ -73,7 +73,7 @@ mBanner.setPages(new CustomBanner.ViewCreator<String>() {
 ```
 轮播图的布局支持任何的布局，轮播图的数据类型也是支持任何的数据类型，这里只是用ImageView和String举例而已。
 #### 2）、其他方法的使用
-```
+```java
 //设置指示器类型，有普通指示器(ORDINARY)、数字指示器(NUMBER)和没有指示器(NONE)三种类型。
 //这个方法跟在布局中设置app:indicatorStyle是一样的
 mBanner.setIndicatorStyle(CustomBanner.IndicatorStyle.ORDINARY);
@@ -112,7 +112,7 @@ mBanner.setOnPageClickListener(new CustomBanner.OnPageClickListener<String>() {
 ```
 以上是CustomBanner的主要常用方法，更多方法请查看源码。
 #### 3）、CustomBanner的很多方法都支持方法连缀，比如以下的方法可以这样调用。
-```
+```java
  mBanner.setPages(参数, 参数).setIndicatorRes(参数, 参数).setIndicatorGravity(参数).startTurning(参数);
 ```
 ### 效果图 
