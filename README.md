@@ -25,7 +25,7 @@ Android轮播图控件，支持任何View的轮播，而不仅仅是图片(Image
 	    android:layout_width="match_parent"
 	    android:layout_height="180dp"
 	    app:indicatorStyle="ORDINARY"  //指示器类型 普通指示器
-	    app:indicatorGravity="CENTER_HORIZONTAL" //指示器的位置 有左。中、右三个值
+	    app:indicatorGravity="CENTER" //指示器的位置 有左。中、右三个值
 	    app:indicatorSelectRes="@drawable/shape_point_select" //指示器的选中的样式
 	    app:indicatorUnSelectRes="@drawable/shape_point_unselect" //指示器的未选中的样式
 	    app:indicatorInterval="5dp"/> //指示器的点的间隔
@@ -89,7 +89,7 @@ mBanner.setIndicatorInterval(20)
 
 //设置指示器的方向。
 //这个方法跟在布局中设置app:indicatorGravity是一样的。
-mBanner.setIndicatorGravity(CustomBanner.IndicatorGravity.CENTER_HORIZONTAL)
+mBanner.setIndicatorGravity(CustomBanner.IndicatorGravity.CENTER)
 
 //设置轮播图自动滚动轮播，参数是轮播图滚动的间隔时间
 //轮播图默认是不自动滚动的，如果不调用这个方法，轮播图将不会自动滚动。
