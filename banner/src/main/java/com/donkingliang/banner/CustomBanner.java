@@ -121,8 +121,12 @@ public class CustomBanner<T> extends FrameLayout {
                     R.styleable.custom_banner_indicatorSelectRes, 0);
             int indicatorUnSelectRes = mTypedArray.getResourceId(
                     R.styleable.custom_banner_indicatorUnSelectRes, 0);
-            mIndicatorSelectDrawable = context.getResources().getDrawable(indicatorSelectRes);
-            mIndicatorUnSelectDrawable = context.getResources().getDrawable(indicatorUnSelectRes);
+            if (indicatorSelectRes != 0) {
+                mIndicatorSelectDrawable = context.getResources().getDrawable(indicatorSelectRes);
+            }
+            if (indicatorUnSelectRes != 0) {
+                mIndicatorUnSelectDrawable = context.getResources().getDrawable(indicatorUnSelectRes);
+            }
             mTypedArray.recycle();
         }
     }
