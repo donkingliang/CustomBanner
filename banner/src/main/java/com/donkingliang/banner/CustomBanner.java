@@ -32,8 +32,8 @@ public class CustomBanner<T> extends FrameLayout {
     private ViewPagerScroller mScroller;
     private long mIntervalTime;
 
-    private int mIndicatorSelectRes;
-    private int mIndicatorUnSelectRes;
+    private Drawable mIndicatorSelectDrawable;
+    private Drawable mIndicatorUnSelectDrawable;
     private int mIndicatorInterval;
     private IndicatorGravity mIndicatorGravity = IndicatorGravity.CENTER;
     private IndicatorStyle mIndicatorStyle = IndicatorStyle.ORDINARY;
@@ -117,10 +117,12 @@ public class CustomBanner<T> extends FrameLayout {
 
             mIndicatorInterval = mTypedArray.getDimensionPixelOffset(
                     R.styleable.custom_banner_indicatorInterval, DensityUtils.dp2px(context, 5));
-            mIndicatorSelectRes = mTypedArray.getResourceId(
+            int indicatorSelectRes = mTypedArray.getResourceId(
                     R.styleable.custom_banner_indicatorSelectRes, 0);
-            mIndicatorUnSelectRes = mTypedArray.getResourceId(
+            int indicatorUnSelectRes = mTypedArray.getResourceId(
                     R.styleable.custom_banner_indicatorUnSelectRes, 0);
+            mIndicatorSelectDrawable = context.getResources().getDrawable(indicatorSelectRes);
+            mIndicatorUnSelectDrawable = context.getResources().getDrawable(indicatorUnSelectRes);
             mTypedArray.recycle();
         }
     }
@@ -260,8 +262,22 @@ public class CustomBanner<T> extends FrameLayout {
      * @return
      */
     public CustomBanner<T> setIndicatorRes(int selectRes, int unSelectRes) {
-        mIndicatorSelectRes = selectRes;
-        mIndicatorUnSelectRes = unSelectRes;
+        mIndicatorSelectDrawable = mContext.getResources().getDrawable(selectRes);
+        mIndicatorUnSelectDrawable = mContext.getResources().getDrawable(unSelectRes);
+        updateIndicator();
+        return this;
+    }
+
+    /**
+     * 设置指示器资源
+     *
+     * @param select   选中的效果资源
+     * @param unSelect 未选中的效果资源
+     * @return
+     */
+    public CustomBanner<T> setIndicator(Drawable select, Drawable unSelect) {
+        mIndicatorSelectDrawable = select;
+        mIndicatorUnSelectDrawable = unSelect;
         updateIndicator();
         return this;
     }
@@ -437,17 +453,9 @@ public class CustomBanner<T> extends FrameLayout {
                 for (int i = 0; i < count; i++) {
                     ImageView view = (ImageView) mIndicatorLayout.getChildAt(i);
                     if (i == currentPage) {
-                        if (mIndicatorSelectRes != 0) {
-                            view.setImageResource(mIndicatorSelectRes);
-                        } else {
-                            view.setImageBitmap(null);
-                        }
+                        view.setImageDrawable(mIndicatorSelectDrawable);
                     } else {
-                        if (mIndicatorUnSelectRes != 0) {
-                            view.setImageResource(mIndicatorUnSelectRes);
-                        } else {
-                            view.setImageBitmap(null);
-                        }
+                        view.setImageDrawable(mIndicatorUnSelectDrawable);
                     }
                 }
             }
