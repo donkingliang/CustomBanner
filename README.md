@@ -13,7 +13,7 @@ Android轮播图控件，支持任何View的轮播，而不仅仅是图片(Image
 在Module的build.gradle在添加以下代码
 ```
   dependencies {
-            compile 'com.github.donkingliang:CustomBanner:1.1.0'
+            compile 'com.github.donkingliang:CustomBanner:1.1.2'
     }
 ```
 ### 2、编写布局
@@ -82,6 +82,7 @@ mBanner.setIndicatorStyle(CustomBanner.IndicatorStyle.ORDINARY);
 //这个方法跟在布局中设置app:indicatorSelectRes、app:indicatorUnSelectRes是一样的。
 //第一个参数是指示器的选中的样式，第二个参数是指示器的未选中的样式。
 mBanner.setIndicatorRes(R.drawable.shape_point_select,R.drawable.shape_point_unselect)；
+mBanner.setIndicator(Drawable select, Drawable unSelect);
       
 //设置指示器的指示点间隔，只有指示器为普通指示器(ORDINARY)时有用。
 //这个方法跟在布局中设置app:indicatorInterval是一样的。
