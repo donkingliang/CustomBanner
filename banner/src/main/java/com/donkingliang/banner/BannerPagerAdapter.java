@@ -43,10 +43,12 @@ public class BannerPagerAdapter<T> extends PagerAdapter {
     @Override
     public Object instantiateItem(ViewGroup container, final int position) {
 
+        final int item = getActualPosition(position);
+
         View view = views.get(position);
 
         if (view == null) {
-            view = mCreator.createView(mContext, position);
+            view = mCreator.createView(mContext, item);
             views.put(position, view);
         }
 
@@ -57,7 +59,6 @@ public class BannerPagerAdapter<T> extends PagerAdapter {
             parent.removeView(view);
         }
 
-        final int item = getActualPosition(position);
         final T t = mData.get(item);
 
         mCreator.updateUI(mContext, view, item, t);
