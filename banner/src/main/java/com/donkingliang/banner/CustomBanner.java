@@ -516,6 +516,15 @@ public class CustomBanner<T> extends FrameLayout {
         return this;
     }
 
+    /**
+     * 通知数据刷新
+     */
+    public void notifyDataSetChanged() {
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
     public interface OnPageClickListener<T> {
         void onPageClick(int position, T t);
     }

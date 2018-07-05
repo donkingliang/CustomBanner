@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //设置普通指示器
-    private void setBean(final ArrayList beans) {
+    private void setBean(final ArrayList<String> beans) {
         mBanner.setPages(new CustomBanner.ViewCreator<String>() {
             @Override
             public View createView(Context context, int position) {
