@@ -13,7 +13,7 @@ Android轮播图控件，支持任何View的轮播，而不仅仅是图片(Image
 在Module的build.gradle在添加以下代码
 ```
   dependencies {
-            compile 'com.github.donkingliang:CustomBanner:1.1.2'
+            compile 'com.github.donkingliang:CustomBanner:1.1.3'
     }
 ```
 ### 2、编写布局
